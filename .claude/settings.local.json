@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"d:\\\\暖伴微信小程序UI设计\"; $env:Path = \"C:\\\\Program Files\\\\Git\\\\bin;C:\\\\Program Files\\\\nodejs;\" + $env:Path; npm.cmd install -g vercel 2>&1)"
+    ]
+  }
+}

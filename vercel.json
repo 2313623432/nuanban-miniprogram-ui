@@ -1,4 +1,5 @@
 {
+  "name": "nuanban-miniprogram-ui",
   "framework": "vite",
   "buildCommand": "vite build",
   "outputDirectory": "dist",
