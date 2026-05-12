@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { X, CheckCircle2, Lock, Zap, Calendar, ChevronDown } from "lucide-react";
+import { useState, useRef } from "react";
+import { X, CheckCircle2, Lock, Zap, Calendar, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import type { PlanRecord } from "../../contexts/PlanContext";
 import { formatWeekDateRange } from "./WeekCardsSlider";
 
@@ -90,13 +90,32 @@ function WeekRow({ wp, startDate, isLast }: {
   );
 }
 
+// ── 历史计划周卡片样式 ──
+const HIST_PHASE = {
+  1: { emoji: "🌱", bg: "bg-green-500/5", border: "border-green-500/20", text: "text-green-600", badge: "bg-green-500/10 text-green-600" },
+  2: { emoji: "💪", bg: "bg-blue-500/5", border: "border-blue-500/20", text: "text-blue-600", badge: "bg-blue-500/10 text-blue-600" },
+  3: { emoji: "🚀", bg: "bg-orange-500/5", border: "border-orange-500/20", text: "text-orange-600", badge: "bg-orange-500/10 text-orange-600" },
+  4: { emoji: "🏆", bg: "bg-purple-500/5", border: "border-purple-500/20", text: "text-purple-600", badge: "bg-purple-500/10 text-purple-600" },
+};
+
 // ── 单份计划区块（仅用于历史Tab）────────────────────────
 function PlanBlock({ record, index, total, expanded, onToggle }: {
   record: PlanRecord; index: number; total: number;
   expanded: boolean; onToggle: () => void;
 }) {
   const startDate = new Date(record.startDate);
-  const weeks = [...record.weeklyPlans].sort((a, b) => b.week - a.week);
+  const weeks = [...record.weeklyPlans].sort((a, b) => a.week - b.week);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeWkIdx, setActiveWkIdx] = useState(0);
+
+  const scrollWeek = (dir: -1 | 1) => {
+    const next = activeWkIdx + dir;
+    if (next < 0 || next >= weeks.length) return;
+    const el = scrollRef.current?.children[next] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+    setActiveWkIdx(next);
+  };
+
   return (
     <div>
       <button
@@ -117,9 +136,72 @@ function PlanBlock({ record, index, total, expanded, onToggle }: {
       {expanded && (
         <>
           <div className="h-px bg-border/15 mx-5 mb-2" />
-          <div className="px-5 pt-2">
-            {weeks.map((wp, wi) => (
-              <WeekRow key={wp.week} wp={wp} startDate={startDate} isLast={wi === weeks.length - 1} />
+          {/* 横向滑动周卡片 */}
+          <div className="flex items-center gap-1 px-3 mb-2">
+            <button
+              onClick={() => scrollWeek(-1)}
+              disabled={activeWkIdx === 0}
+              className="h-6 w-6 rounded-lg glass-button flex items-center justify-center disabled:opacity-30 flex-shrink-0"
+            >
+              <ChevronLeft className="h-3 w-3" />
+            </button>
+            <div
+              ref={scrollRef}
+              className="flex-1 flex gap-2 overflow-x-auto scrollbar-hide"
+              style={{ scrollSnapType: "x mandatory" }}
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const idx = Math.round(el.scrollLeft / (el.clientWidth * 0.75));
+                setActiveWkIdx(Math.min(Math.max(idx, 0), weeks.length - 1));
+              }}
+            >
+              {weeks.map((wp) => {
+                const st = HIST_PHASE[wp.week as 1|2|3|4];
+                const dateRange = formatWeekDateRange(startDate, wp.week);
+                return (
+                  <div
+                    key={wp.week}
+                    className={`flex-none w-[75%] rounded-2xl p-3 border ${st.border} ${st.bg}`}
+                    style={{ scrollSnapAlign: "start" }}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">{st.emoji}</span>
+                      <span className={`text-xs font-bold ${st.text}`}>第{["一","二","三","四"][wp.week-1]}周</span>
+                      <span className={`text-xs px-1.5 py-0.5 rounded-md ${st.badge}`}>{wp.phase}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-2">{dateRange}</div>
+                    <div className="space-y-1">
+                      {wp.tasks.map((task, ti) => (
+                        <div key={ti} className="flex items-start gap-1.5">
+                          <div className="mt-[5px] h-1 w-1 rounded-full bg-primary/40 flex-shrink-0" />
+                          <span className="text-xs leading-relaxed text-foreground/70">{task}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => scrollWeek(1)}
+              disabled={activeWkIdx === weeks.length - 1}
+              className="h-6 w-6 rounded-lg glass-button flex items-center justify-center disabled:opacity-30 flex-shrink-0"
+            >
+              <ChevronRight className="h-3 w-3" />
+            </button>
+          </div>
+          {/* 分页点 */}
+          <div className="flex justify-center gap-1 pb-3">
+            {weeks.map((_, wi) => (
+              <button
+                key={wi}
+                onClick={() => {
+                  const el = scrollRef.current?.children[wi] as HTMLElement | undefined;
+                  el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+                  setActiveWkIdx(wi);
+                }}
+                className={`h-1 rounded-full transition-all ${wi === activeWkIdx ? "w-4 bg-primary" : "w-1 bg-white/20"}`}
+              />
             ))}
           </div>
         </>
