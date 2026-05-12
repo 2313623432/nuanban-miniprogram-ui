@@ -301,13 +301,9 @@ export function HealthCheckInTab() {
 
   const handleDiagnosisAccept = (title: string, incoming: WeekPlan[]) => {
     setShowDiagnosisModal(false);
-    if (hasPlan) {
-      setPendingPlanTitle(title);
-      setPendingWeeklyPlans(incoming);
-      setShowPlanUpdateModal(true);
-    } else {
-      applyNewPlan(title, incoming);
-    }
+    setPendingPlanTitle(title);
+    setPendingWeeklyPlans(incoming);
+    setShowPlanUpdateModal(true);
   };
 
   const applyNewPlan = (title: string, weekly: WeekPlan[]) => {
@@ -810,6 +806,7 @@ export function HealthCheckInTab() {
           {showPlanUpdateModal && (
             <PlanUpdateConfirmModal
               newTasksCount={pendingWeeklyPlans.length > 0 ? pendingWeeklyPlans[0].tasks.length : 5}
+              isNewPlan={!hasPlan}
               onConfirm={() => {
                 const weekly = pendingWeeklyPlans.length > 0
                   ? pendingWeeklyPlans

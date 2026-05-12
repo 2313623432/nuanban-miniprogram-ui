@@ -2,11 +2,12 @@ import { X, RefreshCw, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 interface PlanUpdateConfirmModalProps {
   newTasksCount: number;
+  isNewPlan?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-export function PlanUpdateConfirmModal({ newTasksCount, onConfirm, onCancel }: PlanUpdateConfirmModalProps) {
+export function PlanUpdateConfirmModal({ newTasksCount, isNewPlan = false, onConfirm, onCancel }: PlanUpdateConfirmModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
@@ -19,8 +20,10 @@ export function PlanUpdateConfirmModal({ newTasksCount, onConfirm, onCancel }: P
               <RefreshCw className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">创建新计划？</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">当前任务将被替换</p>
+              <h3 className="text-lg font-semibold">{isNewPlan ? "确认创建计划？" : "创建新计划？"}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isNewPlan ? "AI已为您生成个性化打卡方案" : "当前任务将被替换"}
+              </p>
             </div>
           </div>
           <button
@@ -35,7 +38,9 @@ export function PlanUpdateConfirmModal({ newTasksCount, onConfirm, onCancel }: P
         <div className="rounded-2xl bg-primary/5 border border-primary/15 p-4 space-y-2.5">
           <div className="flex items-center gap-2.5">
             <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
-            <span className="text-sm font-medium">当前任务将被替换，是否创建新计划？</span>
+            <span className="text-sm font-medium">
+              {isNewPlan ? "确认创建AI生成的个性化打卡方案？" : "当前任务将被替换，是否创建新计划？"}
+            </span>
           </div>
           <div className="flex items-center gap-2.5 pt-1 border-t border-primary/10">
             <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />

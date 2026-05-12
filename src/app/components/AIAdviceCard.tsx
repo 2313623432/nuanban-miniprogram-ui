@@ -7,9 +7,23 @@ import { PlanUpdateConfirmModal } from "./checkin/PlanUpdateConfirmModal";
 
 interface AIAdviceCardProps {
   serviceName: string;
-  analysis: string; // 会员可见的分析
-  plan: string; // 所有人可见的计划
-  onCreatePlan?: (tasks: string[]) => void;
+  analysis: string;
+  plan: string;
+  onCreatePlan?: (title: string, tasks: string[]) => void;
+}
+
+function generateTitle(serviceName: string): string {
+  const keywords: Record<string, string> = {
+    "血糖": "血糖", "糖尿病": "控糖", "高血压": "降压", "血压": "稳压",
+    "睡眠": "安眠", "失眠": "安眠", "运动": "运动", "减肥": "减脂",
+    "饮食": "饮食", "关节": "关节", "颈椎": "颈椎", "腰椎": "护腰",
+    "心脏": "养心", "肠胃": "养胃", "情绪": "情绪", "疲劳": "抗疲劳",
+    "食谱": "饮食", "养生": "养生", "按摩": "按摩", "艾灸": "艾灸",
+  };
+  for (const [k, v] of Object.entries(keywords)) {
+    if (serviceName.includes(k)) return `${v}调理计划`;
+  }
+  return "健康调理计划";
 }
 
 export function AIAdviceCard({ serviceName, analysis, plan, onCreatePlan }: AIAdviceCardProps) {
@@ -60,52 +74,18 @@ export function AIAdviceCard({ serviceName, analysis, plan, onCreatePlan }: AIAd
   };
 
   const handleAcceptAdvice = () => {
-    const tasks = extractTasks(plan);
-
-    console.log('🔍 [AIAdviceCard] 检查现有计划:', hasExistingPlan ? '有计划' : '无计划');
-    console.log('📋 [AIAdviceCard] 是否有现有计划:', hasExistingPlan);
-
-    if (hasExistingPlan) {
-      // 有进行中的计划，显示二次确认弹窗
-      console.log('⚠️ [AIAdviceCard] 显示二次确认弹窗');
-      setShowPlanModal(true);
-    } else {
-      // 首次创建，直接加入打卡
-      console.log('✅ [AIAdviceCard] 首次创建，直接加入打卡');
-      createPlanImmediately(tasks);
-    }
-  };
-
-  const createPlanImmediately = (tasks: string[]) => {
-    console.log('✨ [AIAdviceCard] 首次创建计划，任务数:', tasks.length);
-    // 直接创建计划
-    if (onCreatePlan) {
-      console.log('📞 [AIAdviceCard] 调用 onCreatePlan 回调');
-      onCreatePlan(tasks);
-    } else {
-      console.warn('⚠️ [AIAdviceCard] onCreatePlan 回调未定义');
-    }
-    toast.success(`健康计划已创建！`, {
-      description: `已添加 ${tasks.length} 个打卡任务，今日即可开始打卡`
-    });
+    setShowPlanModal(true);
   };
 
   const handleConfirmUpdate = () => {
     const tasks = extractTasks(plan);
-    console.log('🔄 [AIAdviceCard] 确认更新计划，任务数:', tasks.length);
+    const title = generateTitle(serviceName);
 
-    // 更新任务，立即生效
     if (onCreatePlan) {
-      console.log('📞 [AIAdviceCard] 调用 onCreatePlan 回调（更新）');
-      onCreatePlan(tasks);
-    } else {
-      console.warn('⚠️ [AIAdviceCard] onCreatePlan 回调未定义');
+      onCreatePlan(title, tasks);
     }
 
     setShowPlanModal(false);
-    toast.success("计划更新成功！", {
-      description: "新任务已立即生效，可以开始打卡了"
-    });
   };
 
   const handleCancelUpdate = () => {

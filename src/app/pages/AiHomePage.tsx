@@ -1370,15 +1370,14 @@ export function AiHomePage() {
                               serviceName={message.adviceData.serviceName}
                               analysis={message.adviceData.analysis}
                               plan={message.adviceData.plan}
-                              onCreatePlan={(tasks) => {
+                              onCreatePlan={(title, tasks) => {
                                 const planData = {
+                                  title,
                                   tasks,
                                   startDate: new Date().toISOString(),
                                   createdAt: Date.now()
                                 };
-                                console.log('💾 [AiHomePage] 保存计划到内存缓存:', planData);
                                 setPlanData(planData);
-                                console.log('✅ [AiHomePage] 计划已保存，发送planCreated事件');
                                 window.dispatchEvent(new CustomEvent('planCreated', { detail: planData }));
                                 navigate('/checkin');
                               }}
@@ -1522,8 +1521,19 @@ export function AiHomePage() {
                       }
                     });
                     const finalTasks = tasks.length > 0 ? tasks.slice(0, 5) : ["按照AI建议执行健康计划","记录每日健康数据","保持良好作息习惯"];
-                    const planData = { tasks: finalTasks, startDate: new Date().toISOString(), createdAt: Date.now() };
-                    console.log('💾 [AiHomePage] 保存计划到内存缓存:', planData);
+                    const svcName = adviceMsg.adviceData.serviceName || "";
+                    const titleKeywords: Record<string, string> = {
+                      "血糖":"血糖","糖尿病":"控糖","高血压":"降压","血压":"稳压",
+                      "睡眠":"安眠","失眠":"安眠","运动":"运动","减肥":"减脂",
+                      "饮食":"饮食","关节":"关节","颈椎":"颈椎","腰椎":"护腰",
+                      "心脏":"养心","肠胃":"养胃","情绪":"情绪","疲劳":"抗疲劳",
+                      "食谱":"饮食","养生":"养生","按摩":"按摩","艾灸":"艾灸",
+                    };
+                    let title = "健康调理计划";
+                    for (const [k, v] of Object.entries(titleKeywords)) {
+                      if (svcName.includes(k)) { title = `${v}调理计划`; break; }
+                    }
+                    const planData = { title, tasks: finalTasks, startDate: new Date().toISOString(), createdAt: Date.now() };
                     setPlanData(planData);
                     window.dispatchEvent(new CustomEvent('planCreated', { detail: planData }));
                     navigate('/checkin');
