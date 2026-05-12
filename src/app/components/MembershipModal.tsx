@@ -165,19 +165,19 @@ export function MembershipModal({ isOpen, onClose, onSuccess, isRenewal, expiryD
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
-              <p className="text-sm text-gray-700 font-semibold">打卡享2倍积分</p>
+              <p className="text-sm text-gray-700 font-semibold">健康打卡双倍积分奖励</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
-              <p className="text-sm text-gray-700 font-semibold">无限通话</p>
+              <p className="text-sm text-gray-700 font-semibold">畅享和专家智能体的语音通话</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
-              <p className="text-sm text-gray-700">优先享受专家资源</p>
+              <p className="text-sm text-gray-700">健康咨询服务会员优先通道</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
-              <p className="text-sm text-gray-700">更多惊喜礼物 敬请期待</p>
+              <p className="text-sm text-gray-700">更多会员专属惊喜礼物，敬请期待</p>
             </div>
           </div>
         </div>
