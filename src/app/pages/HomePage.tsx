@@ -156,11 +156,7 @@ export function HomePage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (!isMember) {
-                            setShowMemberModal(true);
-                          } else {
-                            navigate(`/chat/${expert.id}`);
-                          }
+                          navigate(`/chat/${expert.id}`);
                         }}
                         className="flex-1 flex items-center justify-center gap-2 h-14 glass-button hover:bg-secondary/30 rounded-2xl font-medium transition-all shadow-md hover:shadow-lg active:scale-98"
                       >

@@ -204,11 +204,6 @@ export function PodcastPlayerPage() {
   const progress = (currentTime / duration) * 100;
   
   const jumpToChapter = (chapterIndex: number) => {
-    // 第一章节免费，其他章节需要会员
-    if (chapterIndex > 0 && !isMember) {
-      setShowMemberModal(true);
-      return;
-    }
     setCurrentTime(chapters[chapterIndex].startTime);
     setCurrentChapter(chapterIndex);
     setShowChapterList(false);
@@ -261,24 +256,8 @@ export function PodcastPlayerPage() {
     textArea.remove();
   };
   
-  // 判断消息是否被锁定的通用函数
-  const isChatMessageLocked = (messageId: string): boolean => {
-    // 会员可以访问所有消息
-    if (isMember) return false;
-    
-    // 过滤出只有 user 和 ai 类型的消息
-    const userAiMessages = chatMessages.filter(m => m.type === "user" || m.type === "ai");
-    
-    // 找到当前消息在过滤后列表中的索引
-    const userAiIndex = userAiMessages.findIndex(m => m.id === messageId);
-    
-    // 如果找不到或者是前两条（第一对对话），则不锁定
-    if (userAiIndex === -1 || userAiIndex <= 1) {
-      return false;
-    }
-    
-    // 第二对及以后的对话需要会员
-    return true;
+  const isChatMessageLocked = (_messageId: string): boolean => {
+    return false;
   };
   
   // Handle like/dislike
@@ -528,8 +507,8 @@ export function PodcastPlayerPage() {
             </div>
           )}
           
-          {/* Action buttons - 仅在非转发模式和会员状态下显示 */}
-          {!forwardMode && isMember && (
+          {/* Action buttons */}
+          {!forwardMode && (
             <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/20">
               {/* TTS Button */}
               <button
@@ -590,19 +569,6 @@ export function PodcastPlayerPage() {
                 title="转发"
               >
                 <Share2 className="h-5 w-5" />
-              </button>
-            </div>
-          )}
-          
-          {/* Member-only blur overlay - 覆盖整个消息卡片包括操作按钮 */}
-          {!isMember && (
-            <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent backdrop-blur-sm rounded-2xl flex items-end justify-center pb-6 pt-32 z-10">
-              <button
-                onClick={() => setShowMemberModal(true)}
-                className="glass-primary px-6 py-3 rounded-full flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transition-all"
-              >
-                <Lock className="h-5 w-5" />
-                <span className="text-base font-medium">开通会员查看完整答案</span>
               </button>
             </div>
           )}
@@ -858,7 +824,7 @@ export function PodcastPlayerPage() {
               {chapters.map((chapter, index) => {
                 const isActive = currentTime >= chapter.startTime && currentTime < chapter.startTime + chapter.duration;
                 const isPassed = currentTime >= chapter.startTime + chapter.duration;
-                const isLocked = index > 0 && !isMember;
+                const isLocked = false;
                 
                 return (
                   <button
@@ -963,31 +929,8 @@ export function PodcastPlayerPage() {
             <div className="flex-1 overflow-y-auto mb-4 space-y-4">
               {chatMessages.filter(conv => conv.type !== "podcast").map((conv, index, filteredMessages) => {
                 // 判断消息是否被锁定
-                // 规则：第一对对话（用户问题+AI回答）是免费的，其余需要会员
+                // 所有对话对所有用户开放
                 let isMessageLocked = false;
-                
-                if (conv.type === "ai") {
-                  // AI消息：找到它在过滤后列表中的位置
-                  // 第一条AI消息（index=1）是免费的，其他需要会员
-                  if (index > 1 && !isMember) {
-                    isMessageLocked = true;
-                  }
-                } else if (conv.type === "user") {
-                  // 用户消息：找到对应的AI消息
-                  // 第一条用户消息（index=0）是免费的，其他需要检查对应的AI消息
-                  if (index > 0) {
-                    // 不是第一条用户消息，检查对应的AI消息是否被锁定
-                    for (let i = index + 1; i < filteredMessages.length; i++) {
-                      if (filteredMessages[i].type === "ai") {
-                        // 找到了对应的AI消息，检查它的索引
-                        if (i > 1 && !isMember) {
-                          isMessageLocked = true;
-                        }
-                        break;
-                      }
-                    }
-                  }
-                }
                 
                 return (
                   <div key={conv.id} className="flex items-start gap-3">

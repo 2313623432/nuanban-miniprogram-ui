@@ -505,13 +505,6 @@ export function ChatPage() {
             
             let isMessageLocked = false;
             
-            if ((msg.type === "user" || msg.type === "expert") && userExpertIndex !== -1) {
-              // 如果是 user 或 expert 消息，且索引 > 1（即第二对及以后），且未开通会员，则锁定
-              if (userExpertIndex > 1 && !isMember) {
-                isMessageLocked = true;
-              }
-            }
-            
             if (msg.type === "user") {
               return (
                 <div key={msg.id} className="flex items-start animate-fadeIn">

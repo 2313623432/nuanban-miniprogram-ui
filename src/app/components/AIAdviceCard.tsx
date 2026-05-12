@@ -116,44 +116,17 @@ export function AIAdviceCard({ serviceName, analysis, plan, onCreatePlan }: AIAd
   return (
     <>
       <div className="space-y-4">
-        {/* 分析部分 - 仅会员可见 */}
-        {isMember ? (
-          <div className="glass-card rounded-2xl p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Crown className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">专业分析</h3>
-            </div>
-            <div className="prose prose-sm max-w-none">
-              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
-                {analysis}
-              </pre>
-            </div>
+        {/* 分析部分 */}
+        <div className="glass-card rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-semibold">专业分析</h3>
           </div>
-        ) : (
-          <div className="glass-card rounded-2xl p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20">
-            <div className="flex items-center gap-2 mb-3">
-              <Crown className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">专业分析</h3>
-              <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                会员专属
-              </span>
-            </div>
-            <div className="relative">
-              <div className="blur-sm select-none">
-                <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-muted-foreground">
-                  {analysis.slice(0, 100)}...
-                </pre>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="glass-card px-6 py-3 rounded-xl border border-primary/30">
-                  <p className="text-sm font-medium text-primary">
-                    开通会员查看完整分析
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="prose prose-sm max-w-none">
+            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
+              {analysis}
+            </pre>
           </div>
-        )}
+        </div>
 
         {/* 健康计划 - 所有人可见 */}
         <div className="glass-card rounded-2xl p-6">

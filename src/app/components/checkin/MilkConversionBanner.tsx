@@ -130,7 +130,7 @@ export function MilkConversionBanner({
                             <Zap className="h-4 w-4 text-yellow-200" />
                             <span className="text-white font-bold text-sm">会员速度</span>
                           </div>
-                          <span className="text-yellow-100 text-xs font-bold">3倍积分</span>
+                          <span className="text-yellow-100 text-xs font-bold">2倍积分</span>
                         </div>
                         <div className="flex items-baseline gap-2">
                           <span className="text-white/80 text-sm">每日最多</span>
@@ -191,7 +191,7 @@ export function MilkConversionBanner({
                           立即0元10天免费领
                         </div>
                         <div className="text-sm font-bold text-red-700 mt-1">
-                          享3倍积分加速 · 最快{memberDays}天领牛奶
+                          享2倍积分加速 · 最快{memberDays}天领牛奶
                         </div>
                       </div>
                       <Sparkles className="h-9 w-9 text-red-600" />

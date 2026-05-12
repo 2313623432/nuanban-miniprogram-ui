@@ -531,7 +531,7 @@ export function AiHomePage() {
           id: (Date.now() + 1).toString(),
           type: "ai",
           content: fullResponse,
-          isLocked: !isMember,
+          isLocked: false,
         };
         setMessages(prev => [...prev, aiMessage]);
       }, 1500);
@@ -833,7 +833,7 @@ export function AiHomePage() {
             id: (Date.now() + 1).toString(),
             type: "ai",
             content: fullResponse,
-            isLocked: !isMember,
+            isLocked: false,
             imageUrl: imageData,
           };
           setMessages(prev => [...prev, aiAnalysis]);
@@ -865,7 +865,7 @@ export function AiHomePage() {
             id: (Date.now() + 1).toString(),
             type: "ai",
             content: fullResponse,
-            isLocked: !isMember,
+            isLocked: false,
             imageUrl: imageUrl,
           };
           setMessages(prev => [...prev, aiAnalysis]);
@@ -1010,31 +1010,10 @@ export function AiHomePage() {
     setSelectedMessages(new Set());
   };
   
-  // 判断消息是否被锁定（用于转发模式）
-  const isMessageLockedForForward = (messageId: string): boolean => {
-    if (isMember) return false;
-    
-    const msg = messages.find(m => m.id === messageId);
-    if (!msg) return false;
-    
-    // AI消息：检查 isLocked 标志且未被免费解锁
-    if (msg.type === "ai") {
-      return !!(msg.isLocked && !unlockedMessages.has(msg.id));
-    }
-    
-    // 用户消息：检查配对的下一条AI消息是否被锁定
-    if (msg.type === "user") {
-      const msgIndex = messages.findIndex(m => m.id === messageId);
-      for (let i = msgIndex + 1; i < messages.length; i++) {
-        if (messages[i].type === "ai") {
-          return !!(messages[i].isLocked && !unlockedMessages.has(messages[i].id));
-        }
-      }
-    }
-    
+  const isMessageLockedForForward = (_messageId: string): boolean => {
     return false;
   };
-  
+
   // 确认转发
   const confirmForward = () => {
     if (selectedMessages.size === 0) {

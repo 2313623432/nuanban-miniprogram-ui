@@ -51,7 +51,7 @@ export function PlanUpdateConfirmModal({ newTasksCount, onConfirm, onCancel }: P
         <div className="rounded-2xl bg-white/5 border border-white/10 px-4 py-3 flex items-start gap-2.5">
           <span className="text-base mt-0.5">💡</span>
           <div className="text-xs text-muted-foreground leading-relaxed">
-            每日打卡积分上限：普通用户 <span className="font-bold text-foreground">20</span> 积分 · 会员 <span className="font-bold text-primary">60</span> 积分（3倍加速）<br />
+            每日打卡积分上限：普通用户 <span className="font-bold text-foreground">20</span> 积分 · 会员 <span className="font-bold text-primary">40</span> 积分（2倍加速）<br />
             连续打卡奖励独立计算，不占上限
           </div>
         </div>

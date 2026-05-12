@@ -79,7 +79,7 @@ export function InsufficientPointsModal({
                 当前积分不足
               </h3>
               <p className="text-lg text-white/90">
-                开通会员立享 <span className="font-black text-yellow-200">3倍</span> 积分加速
+                开通会员立享 <span className="font-black text-yellow-200">2倍</span> 积分加速
               </p>
             </div>
 
@@ -131,7 +131,7 @@ export function InsufficientPointsModal({
                   <Zap className="h-3 w-3 text-primary" />
                   <span className="text-primary text-xs font-bold">会员加速</span>
                 </div>
-                <div className="text-sm text-primary font-bold mb-2">60分/天</div>
+                <div className="text-sm text-primary font-bold mb-2">40分/天</div>
                 <div className="text-2xl font-black text-primary mb-1">{memberDaysNeeded}</div>
                 <div className="text-xs text-primary font-bold">天可兑换 🚀</div>
               </div>
@@ -153,7 +153,7 @@ export function InsufficientPointsModal({
             </div>
             <div className="space-y-2 text-sm">
               {[
-                { icon: "⚡", text: "所有积分3倍加成", highlight: true },
+                { icon: "⚡", text: "所有积分2倍加成", highlight: true },
                 { icon: "🎁", text: "快速兑换礼品", highlight: false },
                 { icon: "🏆", text: "专属会员勋章", highlight: false }
               ].map((item, index) => (
@@ -186,7 +186,7 @@ export function InsufficientPointsModal({
                   立即开通会员
                 </div>
                 <div className="text-base font-bold text-red-700 mt-2">
-                  👆 10天免费体验 · 享3倍积分加速
+                  👆 10天免费体验 · 享2倍积分加速
                 </div>
               </div>
             </div>

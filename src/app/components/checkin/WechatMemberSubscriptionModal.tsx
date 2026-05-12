@@ -25,7 +25,7 @@ export function WechatMemberSubscriptionModal({
     // 模拟微信自动续费签约流程
     setTimeout(() => {
       toast.success("签约成功！", {
-        description: "已开通10天免费会员，享3倍积分加速"
+        description: "已开通10天免费会员，享2倍积分加速"
       });
 
       setTimeout(() => {
@@ -60,7 +60,7 @@ export function WechatMemberSubscriptionModal({
                   立即开通会员
                 </div>
                 <div className="text-2xl font-bold text-yellow-100 drop-shadow-lg">
-                  享3倍打卡积分加速
+                  享2倍打卡积分加速
                 </div>
                 <div className="text-base font-medium text-white/85">
                   快速积累积分 · 兑换健康好礼
@@ -77,7 +77,7 @@ export function WechatMemberSubscriptionModal({
               </div>
               <div className="glass-card rounded-xl p-3 bg-gradient-to-br from-yellow-400/30 to-orange-400/30 border-2 border-yellow-300/50">
                 <div className="text-yellow-200 text-xs mb-1 font-bold">会员加速</div>
-                <div className="text-white text-lg font-black">60分/天</div>
+                <div className="text-white text-lg font-black">40分/天</div>
                 <div className="text-yellow-100 text-xs font-bold">仅需50天 🚀</div>
               </div>
             </div>
@@ -94,7 +94,7 @@ export function WechatMemberSubscriptionModal({
             </h4>
             <div className="space-y-2">
               {[
-                { icon: "⚡", text: "所有积分3倍加成", highlight: true },
+                { icon: "⚡", text: "所有积分2倍加成", highlight: true },
                 { icon: "🎁", text: "快速兑换牛奶礼品", highlight: false },
                 { icon: "🏆", text: "专属会员勋章", highlight: false },
                 { icon: "✨", text: "更多福利陆续上线", highlight: false }
@@ -178,7 +178,7 @@ export function WechatMemberSubscriptionModal({
                   {isProcessing ? "开通中..." : "立即开通会员"}
                 </div>
                 <div className="text-base font-bold text-red-700 mt-2">
-                  享3倍打卡积分加速
+                  享2倍打卡积分加速
                 </div>
               </div>
             </div>
