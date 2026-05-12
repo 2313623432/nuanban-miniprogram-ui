@@ -107,7 +107,7 @@ export function HealthCheckInTab() {
           id: `auto-${index + 1}`,
           content,
           type: "auto" as const,
-          points: 3,
+          points: 2,
           status: "pending" as const,
           requiresPhoto: false
         })),
@@ -144,9 +144,9 @@ export function HealthCheckInTab() {
   const [currentPlanId, setCurrentPlanId] = useState<string>("");
   const [pendingWeeklyPlans, setPendingWeeklyPlans] = useState<WeekPlan[]>([]);
 
-  const MEMBER_MULTIPLIER = 3;
+  const MEMBER_MULTIPLIER = 2;
   const NON_MEMBER_DAILY_CHECKIN_LIMIT = 20;
-  const MEMBER_DAILY_CHECKIN_LIMIT = 60;
+  const MEMBER_DAILY_CHECKIN_LIMIT = 40;
   const PLAN_DURATION_DAYS = 28;
 
   // 实时时钟
@@ -272,7 +272,7 @@ export function HealthCheckInTab() {
       id: Date.now().toString(),
       content,
       type: "manual",
-      points: 3,
+      points: 2,
       status: "pending",
       requiresPhoto: false
     };
@@ -318,7 +318,7 @@ export function HealthCheckInTab() {
       id: `auto-${Date.now()}-${index}`,
       content,
       type: "auto" as const,
-      points: 3,
+      points: 2,
       status: "pending" as const,
       requiresPhoto: false
     }));
@@ -372,7 +372,7 @@ export function HealthCheckInTab() {
             id: `auto-${Date.now()}-${index}`,
             content,
             type: "auto" as const,
-            points: 3,
+            points: 2,
             status: "pending" as const,
             requiresPhoto: false
           }));
@@ -818,7 +818,7 @@ export function HealthCheckInTab() {
                   id: `auto-${Date.now()}-${index}`,
                   content,
                   type: "auto" as const,
-                  points: 3,
+                  points: 2,
                   status: "pending" as const,
                   requiresPhoto: false
                 }));

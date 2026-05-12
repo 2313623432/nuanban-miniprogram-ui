@@ -17,8 +17,8 @@ export function MilkConversionBanner({
 
   const MILK_POINTS_REQUIRED = 3000; // 牛奶所需积分
   const NON_MEMBER_DAILY_MAX = 20; // 非会员每日最多积分
-  const MEMBER_DAILY_MAX = 60; // 会员每日最多积分（3倍）
-  const MEMBER_MULTIPLIER = 3; // 会员积分倍数
+  const MEMBER_DAILY_MAX = 40; // 会员每日最多积分（2倍）
+  const MEMBER_MULTIPLIER = 2; // 会员积分倍数
 
   const remainingPoints = Math.max(0, MILK_POINTS_REQUIRED - currentPoints);
   const progress = Math.min((currentPoints / MILK_POINTS_REQUIRED) * 100, 100);

@@ -27,10 +27,10 @@ export function ExtraPointsSection({
   inviteCount = 0,
   invitePoints = 0
 }: ExtraPointsSectionProps) {
-  const MEMBER_MULTIPLIER = 3;
+  const MEMBER_MULTIPLIER = 2;
   // 暂时不限制额外积分上限
   const NON_MEMBER_EXTRA_LIMIT = 999999;
-  const MEMBER_EXTRA_LIMIT = 999999; // 会员3倍加速
+  const MEMBER_EXTRA_LIMIT = 999999; // 会员2倍加速
 
   const limit = isMember ? MEMBER_EXTRA_LIMIT : NON_MEMBER_EXTRA_LIMIT;
   const isLimitReached = false; // 暂时不限制
@@ -59,7 +59,7 @@ export function ExtraPointsSection({
     setTimeout(() => {
       let earnedPoints = task.points;
 
-      // 会员3倍
+      // 会员2倍
       if (isMember) {
         earnedPoints = task.points * MEMBER_MULTIPLIER;
       }

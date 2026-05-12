@@ -20,11 +20,11 @@ export function InsufficientPointsModal({
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const deficit = requiredPoints - currentPoints;
-  const MEMBER_MULTIPLIER = 3;
+  const MEMBER_MULTIPLIER = 2;
 
   // 会员加速计算
   const normalDaysNeeded = Math.ceil(deficit / 20); // 非会员每日最多20分
-  const memberDaysNeeded = Math.ceil(deficit / 60); // 会员每日最多60分（3倍）
+  const memberDaysNeeded = Math.ceil(deficit / 40); // 会员每日最多40分（2倍）
 
   const handleSubscribe = () => {
     setShowSubscriptionModal(true);

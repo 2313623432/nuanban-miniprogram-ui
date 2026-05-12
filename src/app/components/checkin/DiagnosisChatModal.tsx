@@ -314,7 +314,7 @@ export function DiagnosisChatModal({ isRediagnosis, onAcceptPlan, onClose }: Dia
                             {i + 1}
                           </div>
                           <span className="text-sm flex-1 leading-snug">{task}</span>
-                          <span className={`text-xs font-medium flex-shrink-0 ${st.text}`}>+3积分</span>
+                          <span className={`text-xs font-medium flex-shrink-0 ${st.text}`}>+2积分</span>
                         </div>
                       ))}
                     </div>
@@ -323,7 +323,7 @@ export function DiagnosisChatModal({ isRediagnosis, onAcceptPlan, onClose }: Dia
                     <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-white/10">
                       <span>{wp.tasks.length}项每日任务</span>
                       <span className={`font-medium ${st.text}`}>
-                        最高 {wp.tasks.length * 3 * 7} 积分/周
+                        最高 {wp.tasks.length * 2 * 7} 积分/周
                       </span>
                     </div>
                   </div>
