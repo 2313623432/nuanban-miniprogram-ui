@@ -48,6 +48,7 @@ export function PointsMallTab() {
   const [view, setView] = useState<"mall" | "records">("mall");
   const [isMember, setIsMember] = useState(false); // 是否是会员
   const [hasClaimedMilk, setHasClaimedMilk] = useState(false); // 是否已领取过牛奶
+  const [redeemedVirtualIds, setRedeemedVirtualIds] = useState<Set<string>>(new Set()); // 已兑换的虚拟商品ID
   const [showCustomerServiceModal, setShowCustomerServiceModal] = useState(false); // 客服模态框
   const [recordFilter, setRecordFilter] = useState<RecordFilterStatus>("all"); // 兑换记录筛选
 
@@ -227,6 +228,12 @@ export function PointsMallTab() {
       return;
     }
 
+    // 虚拟商品兑换次数限制
+    if (gift.category === "virtual" && redeemedVirtualIds.has(gift.id)) {
+      toast.error("已达兑换数量上限");
+      return;
+    }
+
     // 积分不足
     if (points < gift.points) {
       setSelectedGift(gift);
@@ -250,6 +257,11 @@ export function PointsMallTab() {
     // 如果是牛奶，标记已领取
     if (selectedGift.name.includes("牛奶")) {
       setHasClaimedMilk(true);
+    }
+
+    // 虚拟商品标记已兑换
+    if (selectedGift.category === "virtual") {
+      setRedeemedVirtualIds(prev => new Set(prev).add(selectedGift.id));
     }
 
     toast.success(`兑换成功！${selectedGift.category === "virtual" ? "请前往兑换记录中获取礼品" : "将在7个工作日内发货"}`);
@@ -335,20 +347,34 @@ export function PointsMallTab() {
 
           {/* 礼品列表 */}
           <div className="grid grid-cols-2 gap-4">
-            {filteredGifts.map(gift => (
+            {filteredGifts.map(gift => {
+              const isVirtualRedeemed = gift.category === "virtual" && redeemedVirtualIds.has(gift.id);
+              const isOutOfStock = gift.stock === 0;
+              const isDisabled = isOutOfStock || isVirtualRedeemed;
+
+              return (
               <div
                 key={gift.id}
-                className="glass-card rounded-2xl overflow-hidden group hover:shadow-lg transition-all"
+                className={`glass-card rounded-2xl overflow-hidden group transition-all ${
+                  isDisabled ? "opacity-50" : "hover:shadow-lg"
+                }`}
               >
                 <div className="relative aspect-square overflow-hidden">
                   <img
                     src={gift.image}
                     alt={gift.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                    className={`w-full h-full object-cover transition-transform ${
+                      isDisabled ? "" : "group-hover:scale-110"
+                    }`}
                   />
-                  {gift.stock === 0 && (
+                  {isOutOfStock && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                       <span className="text-white font-medium">已兑完</span>
+                    </div>
+                  )}
+                  {isVirtualRedeemed && !isOutOfStock && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <span className="text-white font-medium text-sm">已达兑换数量上限</span>
                     </div>
                   )}
                 </div>
@@ -364,10 +390,10 @@ export function PointsMallTab() {
                     </div>
                     <button
                       onClick={() => handleRedeem(gift)}
-                      disabled={gift.stock === 0}
+                      disabled={isDisabled}
                       className="px-4 py-1.5 rounded-xl text-sm font-medium bg-gradient-to-r from-primary to-secondary text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      兑换
+                      {isVirtualRedeemed ? "已兑换" : "兑换"}
                     </button>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -375,7 +401,7 @@ export function PointsMallTab() {
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </>
       ) : (
