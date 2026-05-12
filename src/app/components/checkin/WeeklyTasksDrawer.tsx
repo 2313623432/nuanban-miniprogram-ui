@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, CheckCircle2, Lock, Zap, Calendar } from "lucide-react";
+import { X, CheckCircle2, Lock, Zap, Calendar, ChevronDown } from "lucide-react";
 import type { PlanRecord } from "../../contexts/PlanContext";
 import { formatWeekDateRange } from "./WeekCardsSlider";
 
@@ -91,29 +91,39 @@ function WeekRow({ wp, startDate, isLast }: {
 }
 
 // ── 单份计划区块（仅用于历史Tab）────────────────────────
-function PlanBlock({ record, index, total }: { record: PlanRecord; index: number; total: number }) {
+function PlanBlock({ record, index, total, expanded, onToggle }: {
+  record: PlanRecord; index: number; total: number;
+  expanded: boolean; onToggle: () => void;
+}) {
   const startDate = new Date(record.startDate);
   const weeks = [...record.weeklyPlans].sort((a, b) => b.week - a.week);
   return (
     <div>
-      <div className="flex items-center gap-2.5 px-5 pt-4 pb-2.5">
+      <button
+        onClick={onToggle}
+        className="w-full text-left flex items-center gap-2.5 px-5 pt-4 pb-2.5 hover:bg-white/5 transition-colors"
+      >
         <div className="h-6 w-6 rounded-lg bg-white/8 flex items-center justify-center text-xs font-bold text-muted-foreground flex-shrink-0">
           {total - index}
         </div>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <span className="text-sm font-semibold">{record.title}</span>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
             <Calendar className="h-3 w-3" />{planRange(record.startDate)}
           </div>
         </div>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/8 text-muted-foreground">已完成</span>
-      </div>
-      <div className="h-px bg-border/15 mx-5 mb-2" />
-      <div className="px-5 pt-2">
-        {weeks.map((wp, wi) => (
-          <WeekRow key={wp.week} wp={wp} startDate={startDate} isLast={wi === weeks.length - 1} />
-        ))}
-      </div>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} />
+      </button>
+      {expanded && (
+        <>
+          <div className="h-px bg-border/15 mx-5 mb-2" />
+          <div className="px-5 pt-2">
+            {weeks.map((wp, wi) => (
+              <WeekRow key={wp.week} wp={wp} startDate={startDate} isLast={wi === weeks.length - 1} />
+            ))}
+          </div>
+        </>
+      )}
       {index < total - 1 && <div className="mx-5 mt-1 mb-1 h-px bg-border/15" />}
     </div>
   );
@@ -122,6 +132,15 @@ function PlanBlock({ record, index, total }: { record: PlanRecord; index: number
 // ── 主组件 ───────────────────────────────────────────────
 export function WeeklyTasksDrawer({ planHistory, onClose }: WeeklyTasksDrawerProps) {
   const [tab, setTab] = useState<"current" | "history">("current");
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
 
   // 从新到旧
   const sorted = [...planHistory].sort((a, b) => b.createdAt - a.createdAt);
@@ -244,7 +263,14 @@ export function WeeklyTasksDrawer({ planHistory, onClose }: WeeklyTasksDrawerPro
                 </div>
               ) : (
                 historyPlans.map((record, i) => (
-                  <PlanBlock key={record.id} record={record} index={i} total={historyPlans.length} />
+                  <PlanBlock
+                    key={record.id}
+                    record={record}
+                    index={i}
+                    total={historyPlans.length}
+                    expanded={expandedIds.has(record.id)}
+                    onToggle={() => toggleExpand(record.id)}
+                  />
                 ))
               )}
             </>
