@@ -45,6 +45,7 @@ interface OrderInfo {
   category: "virtual" | "physical" | "health";
   status: "pending" | "shipped" | "completed" | "signed" | "cancelled";
   cancelReason?: string;
+  productLink?: string;
   logistics?: LogisticsInfo;
   address?: {
     name: string;
@@ -79,17 +80,48 @@ const STATUS_BG: Record<LogisticsStatus, string> = {
 
 // Mock order database
 const MOCK_ORDERS: Record<string, OrderInfo> = {
-  "1": {
-    id: "1",
+  "5": {
+    id: "5",
     giftName: "7天会员体验卡",
     giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23FFE5B4'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%91%91%3C/text%3E%3C/svg%3E",
     points: 50,
     date: "2026-04-20",
     category: "virtual",
     status: "completed",
+    productLink: "https://nuanban.app/activate-member?code=M7K9X2R4",
+  },
+  "1": {
+    id: "1",
+    giftName: "颈部按摩仪",
+    giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23FEF3C7'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%92%86%3C/text%3E%3C/svg%3E",
+    points: 200,
+    date: "2026-05-05",
+    category: "health",
+    status: "pending",
+    address: { name: "李建国", phone: "136****6666", address: "上海市浦东新区张江镇科苑路 88号 嘉宝苑 5栋 1203室" },
+    logistics: { company: "", trackingNumber: "", status: "pending", events: [] },
   },
   "2": {
     id: "2",
+    giftName: "艾灸盒套装",
+    giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23FCE7F3'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E",
+    points: 150,
+    date: "2026-05-03",
+    category: "physical",
+    status: "shipped",
+    address: { name: "赵红梅", phone: "155****7777", address: "四川省成都市武侯区天府大道 996号 蓝光公馆 2栋 1508" },
+    logistics: {
+      company: "圆通速递",
+      trackingNumber: "YTO9876543210",
+      status: "shipped",
+      events: [
+        { id: "e1", time: "2026-05-04 14:20", location: "成都武侯揽投部", description: "快件已揽收，等待发出" },
+        { id: "e2", time: "2026-05-03 09:30", location: "暖伴健康商城", description: "您的兑换订单已确认，正在打包中" },
+      ],
+    },
+  },
+  "3": {
+    id: "3",
     giftName: "养生茶礼盒",
     giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23F0FDF4'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%8D%B5%3C/text%3E%3C/svg%3E",
     points: 80,
@@ -110,17 +142,6 @@ const MOCK_ORDERS: Record<string, OrderInfo> = {
         { id: "e6", time: "2026-04-18 16:40", location: "暖伴健康商城", description: "您的兑换订单已审核通过，正在打包中" },
       ],
     },
-  },
-  "3": {
-    id: "3",
-    giftName: "颈部按摩仪",
-    giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23FEF3C7'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%92%86%3C/text%3E%3C/svg%3E",
-    points: 200,
-    date: "2026-05-05",
-    category: "health",
-    status: "pending",
-    address: { name: "李建国", phone: "136****6666", address: "上海市浦东新区张江镇科苑路 88号 嘉宝苑 5栋 1203室" },
-    logistics: { company: "", trackingNumber: "", status: "pending", events: [] },
   },
   "4": {
     id: "4",
@@ -145,6 +166,16 @@ const MOCK_ORDERS: Record<string, OrderInfo> = {
         { id: "e7", time: "2026-04-10 15:30", location: "暖伴健康商城", description: "您的兑换订单已确认，安排发货中" },
       ],
     },
+  },
+  "7": {
+    id: "7",
+    giftName: "AI专属语音包",
+    giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23E0F2FE'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%8E%A4%3C/text%3E%3C/svg%3E",
+    points: 30,
+    date: "2026-05-03",
+    category: "virtual",
+    status: "completed",
+    productLink: "https://nuanban.app/voice-pack/ai-custom",
   },
   "6": {
     id: "6",
@@ -386,18 +417,32 @@ export function OrderDetailPage() {
           </div>
         )}
 
-        {/* Virtual order — benefit delivered */}
+        {/* Virtual order — claim gift via link */}
         {!isPhysical && !isCancelled && (
           <div className="glass-card rounded-3xl p-5 shadow-sm">
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3 mb-4">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Crown className="h-6 w-6 text-white" />
               </div>
               <div>
-                <div className="font-semibold text-base">权益已到账</div>
-                <div className="text-sm text-muted-foreground mt-0.5">虚拟权益即时生效，无需等待物流</div>
+                <div className="font-semibold text-base">兑换成功</div>
+                <div className="text-sm text-muted-foreground mt-0.5">点击下方链接获取，获取礼品</div>
               </div>
             </div>
+            {order.productLink ? (
+              <a
+                href={order.productLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-3 px-4 rounded-2xl bg-primary/10 border border-primary/20 text-primary text-sm font-medium text-center hover:bg-primary/15 transition-colors active:scale-[0.98]"
+              >
+                {order.productLink}
+              </a>
+            ) : (
+              <div className="w-full py-3 px-4 rounded-2xl bg-muted/50 text-center text-sm text-muted-foreground">
+                暂无链接，请联系客服获取
+              </div>
+            )}
           </div>
         )}
 

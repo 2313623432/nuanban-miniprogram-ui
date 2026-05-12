@@ -184,6 +184,16 @@ export function PointsMallTab() {
       category: "physical",
       cancelReason: "用户主动申请退款，未发货已取消",
     },
+    {
+      id: "7",
+      giftName: "AI专属语音包",
+      giftImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23E0F2FE'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em'%3E%F0%9F%8E%A4%3C/text%3E%3C/svg%3E",
+      points: 30,
+      status: "completed",
+      date: "2026-05-03",
+      orderNo: "VR20260503001",
+      category: "virtual",
+    },
   ];
 
   const categories = [
@@ -242,7 +252,7 @@ export function PointsMallTab() {
       setHasClaimedMilk(true);
     }
 
-    toast.success(`兑换成功！${selectedGift.category === "virtual" ? "权益已到账" : "将在7个工作日内发货"}`);
+    toast.success(`兑换成功！${selectedGift.category === "virtual" ? "请前往兑换记录中获取礼品" : "将在7个工作日内发货"}`);
     setShowRedeemModal(false);
     setSelectedGift(null);
     // 兑换成功后跳转到兑换记录
