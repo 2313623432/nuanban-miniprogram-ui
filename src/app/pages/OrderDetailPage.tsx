@@ -691,6 +691,17 @@ export function OrderDetailPage() {
             </div>
           </div>
         )}
+
+        {/* 订阅物流消息 — 实物商品底部到货通知 */}
+        {isPhysical && !isCancelled && (
+          <button
+            onClick={() => toast.success("已订阅物流消息，到货后将第一时间通知您")}
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-xl active:scale-[0.98] transition-all"
+          >
+            <Bell className="h-5 w-5" />
+            订阅物流消息
+          </button>
+        )}
       </div>
 
       {/* Feedback Modal */}

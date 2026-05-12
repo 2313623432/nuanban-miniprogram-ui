@@ -29,7 +29,7 @@ export function EmptyPlanState({ isFirstTime, onGoToHome }: EmptyPlanStateProps)
             <>
               <h3 className="text-2xl font-bold">当前还没有创建计划</h3>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                开始全面诊断，获取专业的每日养生计划
+                开始全面评估，获取专业的每日养生计划
               </p>
               <div className="pt-2">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm">
@@ -42,7 +42,7 @@ export function EmptyPlanState({ isFirstTime, onGoToHome }: EmptyPlanStateProps)
             <>
               <h3 className="text-2xl font-bold">当前阶段任务已完成</h3>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                开始全面诊断，获取新的养生计划
+                开始全面评估，获取新的养生计划
               </p>
               <div className="pt-2">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 text-green-600 dark:text-green-500 text-sm font-semibold">
@@ -60,7 +60,7 @@ export function EmptyPlanState({ isFirstTime, onGoToHome }: EmptyPlanStateProps)
             onClick={onGoToHome}
             className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105 group"
           >
-            <span>开始诊断</span>
+            <span>开始创建计划</span>
             <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>

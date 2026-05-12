@@ -143,6 +143,7 @@ export function HealthCheckInTab() {
   const [showHistoryDrawer, setShowHistoryDrawer] = useState(false);
   const [currentPlanId, setCurrentPlanId] = useState<string>("");
   const [pendingWeeklyPlans, setPendingWeeklyPlans] = useState<WeekPlan[]>([]);
+  const [pendingPlanTitle, setPendingPlanTitle] = useState("");
 
   const MEMBER_MULTIPLIER = 2;
   const NON_MEMBER_DAILY_CHECKIN_LIMIT = 20;
@@ -298,19 +299,18 @@ export function HealthCheckInTab() {
     setShowDiagnosisModal(true);
   };
 
-  const handleDiagnosisAccept = (incoming: WeekPlan[]) => {
+  const handleDiagnosisAccept = (title: string, incoming: WeekPlan[]) => {
     setShowDiagnosisModal(false);
     if (hasPlan) {
-      // 已有计划 → 走二次确认弹窗
+      setPendingPlanTitle(title);
       setPendingWeeklyPlans(incoming);
       setShowPlanUpdateModal(true);
     } else {
-      // 首次 → 直接设置
-      applyNewPlan(incoming);
+      applyNewPlan(title, incoming);
     }
   };
 
-  const applyNewPlan = (weekly: WeekPlan[]) => {
+  const applyNewPlan = (title: string, weekly: WeekPlan[]) => {
     const startDate = new Date();
     const planId = `plan-${Date.now()}`;
 
@@ -333,6 +333,7 @@ export function HealthCheckInTab() {
 
     // 保存到 Context
     setPlanDataContext({
+      title,
       tasks: weekly[0].tasks,
       weeklyPlans: weekly,
       startDate: startDate.toISOString(),
@@ -342,6 +343,7 @@ export function HealthCheckInTab() {
     // 加入历史记录
     addToPlanHistory({
       id: planId,
+      title,
       startDate: startDate.toISOString(),
       weeklyPlans: weekly,
       createdAt: Date.now(),
@@ -384,7 +386,7 @@ export function HealthCheckInTab() {
           setCurrentPlanId(planId);
           setIsFirstTimePlan(false);
           // 加入历史
-          addToPlanHistory({ id: planId, startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
+          addToPlanHistory({ id: planId, title: planData.title || "健康调理计划", startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
         }
       }
     };
@@ -667,7 +669,7 @@ export function HealthCheckInTab() {
                   className="glass-button px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-sm bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  重新诊断
+                  重新制定计划
                 </button>
                 <button
                   onClick={() => setShowAddTaskModal(true)}
@@ -760,7 +762,7 @@ export function HealthCheckInTab() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105"
                 >
                   <Sparkles className="h-5 w-5" />
-                  开始AI诊断获取任务
+                  开始AI制定任务
                 </button>
               </div>
             )}
@@ -812,6 +814,7 @@ export function HealthCheckInTab() {
                 const weekly = pendingWeeklyPlans.length > 0
                   ? pendingWeeklyPlans
                   : generateWeeklyPlans(newPlanPreviewTasks);
+                const title = pendingPlanTitle || "健康调理计划";
                 const startDate = new Date();
                 const planId = `plan-${Date.now()}`;
                 const newAutoTasks = weekly[0].tasks.map((content, index) => ({
@@ -829,23 +832,26 @@ export function HealthCheckInTab() {
                 setCurrentPlanId(planId);
                 setPlanStartDate(startDate);
                 setPlanDataContext({
+                  title,
                   tasks: weekly[0].tasks,
                   weeklyPlans: weekly,
                   startDate: startDate.toISOString(),
                   createdAt: Date.now(),
                 });
-                addToPlanHistory({ id: planId, startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
+                addToPlanHistory({ id: planId, title, startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
                 setShowPlanUpdateModal(false);
                 setShowNewPlanPreview(false);
                 setNewPlanPreviewTasks([]);
                 setPendingNewTasks([]);
                 setPendingWeeklyPlans([]);
+                setPendingPlanTitle("");
                 toast.success("计划更新成功！", { description: "新任务已立即生效，快来开始打卡吧" });
               }}
               onCancel={() => {
                 setShowPlanUpdateModal(false);
                 setPendingNewTasks([]);
                 setPendingWeeklyPlans([]);
+                setPendingPlanTitle("");
                 toast.info("已取消计划更新");
               }}
             />

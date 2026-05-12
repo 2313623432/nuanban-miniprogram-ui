@@ -8,12 +8,14 @@ export interface WeekPlan {
 
 export interface PlanRecord {
   id: string;
+  title: string;        // 八个字以内的计划标题
   startDate: string;   // ISO string
   weeklyPlans: WeekPlan[];
   createdAt: number;
 }
 
 interface PlanData {
+  title: string;        // 八个字以内的计划标题
   tasks: string[];
   weeklyPlans?: WeekPlan[];
   startDate: string;

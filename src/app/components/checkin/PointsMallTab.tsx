@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Gift, Award, Package, Clock, Settings, ChevronRight, Truck, CheckCircle, Headphones, TrendingUp, XCircle } from "lucide-react";
+import { Gift, Award, Package, Clock, Settings, ChevronRight, Truck, CheckCircle, Headphones, TrendingUp, XCircle, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { RedeemModal } from "./RedeemModal";
 import { AddressSettingsModal } from "./AddressSettingsModal";
@@ -51,6 +51,8 @@ export function PointsMallTab() {
   const [redeemedVirtualIds, setRedeemedVirtualIds] = useState<Set<string>>(new Set()); // 已兑换的虚拟商品ID
   const [showCustomerServiceModal, setShowCustomerServiceModal] = useState(false); // 客服模态框
   const [recordFilter, setRecordFilter] = useState<RecordFilterStatus>("all"); // 兑换记录筛选
+  const [showShippingNotifyModal, setShowShippingNotifyModal] = useState(false); // 发货通知弹窗
+  const [shippingNotifyGiftName, setShippingNotifyGiftName] = useState(""); // 发货通知-礼品名称
 
   const gifts: GiftItem[] = [
     {
@@ -262,13 +264,16 @@ export function PointsMallTab() {
     // 虚拟商品标记已兑换
     if (selectedGift.category === "virtual") {
       setRedeemedVirtualIds(prev => new Set(prev).add(selectedGift.id));
+      toast.success("兑换成功！请前往兑换记录中获取礼品");
+      setShowRedeemModal(false);
+      setSelectedGift(null);
+      setView("records");
+    } else {
+      // 实物商品 → 关闭兑换弹窗，显示发货通知弹窗
+      setShowRedeemModal(false);
+      setShippingNotifyGiftName(selectedGift.name);
+      setShowShippingNotifyModal(true);
     }
-
-    toast.success(`兑换成功！${selectedGift.category === "virtual" ? "请前往兑换记录中获取礼品" : "将在7个工作日内发货"}`);
-    setShowRedeemModal(false);
-    setSelectedGift(null);
-    // 兑换成功后跳转到兑换记录
-    setView("records");
   };
 
   // 会员诱导确认
@@ -598,6 +603,66 @@ export function PointsMallTab() {
         <CustomerServiceModal
           onClose={() => setShowCustomerServiceModal(false)}
         />
+      )}
+
+      {/* 发货通知弹窗 — 实物商品兑换成功后 */}
+      {showShippingNotifyModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => {
+              setShowShippingNotifyModal(false);
+              setSelectedGift(null);
+              toast.success("将在7个工作日内发货");
+              setView("records");
+            }}
+          />
+          <div className="relative glass-card rounded-3xl p-6 max-w-md w-full space-y-5">
+            <div className="flex items-start gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                <Truck className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold">是否获取发货信息</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  开启后，「{shippingNotifyGiftName}」发货时将第一时间通过微信通知您快递单号与物流进度
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-primary/5 border border-primary/10 px-4 py-3 flex items-start gap-2.5">
+              <Bell className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-muted-foreground leading-relaxed">
+                授权微信服务通知后，包裹状态更新（已发货、运输中、已签收）将通过服务通知实时提醒
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowShippingNotifyModal(false);
+                  setSelectedGift(null);
+                  toast.success("将在7个工作日内发货");
+                  setView("records");
+                }}
+                className="flex-1 py-3 rounded-2xl glass-button font-medium text-muted-foreground"
+              >
+                暂不开启
+              </button>
+              <button
+                onClick={() => {
+                  setShowShippingNotifyModal(false);
+                  setSelectedGift(null);
+                  toast.success("已订阅发货通知，将在发货时提醒您");
+                  setView("records");
+                }}
+                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                开启通知
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

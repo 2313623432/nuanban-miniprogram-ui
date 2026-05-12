@@ -101,7 +101,7 @@ function PlanBlock({ record, index, total }: { record: PlanRecord; index: number
           {total - index}
         </div>
         <div className="flex-1">
-          <span className="text-sm font-semibold">历史计划 {total - index}</span>
+          <span className="text-sm font-semibold">{record.title}</span>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
             <Calendar className="h-3 w-3" />{planRange(record.startDate)}
           </div>
@@ -156,7 +156,7 @@ export function WeeklyTasksDrawer({ planHistory, onClose }: WeeklyTasksDrawerPro
               tab === "current" ? "glass-button text-primary shadow-sm" : "text-muted-foreground hover:bg-white/5"
             }`}
           >
-            当前计划
+            当前任务
           </button>
           <button
             onClick={() => setTab("history")}
@@ -183,7 +183,7 @@ export function WeeklyTasksDrawer({ planHistory, onClose }: WeeklyTasksDrawerPro
                 <div className="py-20 text-center text-muted-foreground">
                   <div className="text-4xl mb-3">📋</div>
                   <p className="text-sm">暂无进行中的计划</p>
-                  <p className="text-xs mt-1 opacity-60">完成AI诊断后，计划将显示在这里</p>
+                  <p className="text-xs mt-1 opacity-60">完成AI评估后，计划将显示在这里</p>
                 </div>
               ) : (() => {
                 const startDate = new Date(currentPlan.startDate);
@@ -195,7 +195,7 @@ export function WeeklyTasksDrawer({ planHistory, onClose }: WeeklyTasksDrawerPro
                     <div className="flex items-center gap-2 px-5 pt-4 pb-2.5">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold">当前计划</span>
+                          <span className="text-sm font-semibold">{currentPlan.title}</span>
                           <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">进行中</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">

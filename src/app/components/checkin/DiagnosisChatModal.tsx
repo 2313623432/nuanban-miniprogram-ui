@@ -10,7 +10,7 @@ interface Message {
 
 interface DiagnosisChatModalProps {
   isRediagnosis: boolean;
-  onAcceptPlan: (weeklyPlans: WeekPlan[]) => void;
+  onAcceptPlan: (title: string, weeklyPlans: WeekPlan[]) => void;
   onClose: () => void;
 }
 
@@ -59,6 +59,20 @@ function generateWeeklyPlans(baseTasks: string[]): WeekPlan[] {
       tasks: [...baseTasks.slice(0, 3), "回顾月度健康数据记录", "制定下月健康改进目标"],
     },
   ];
+}
+
+/** 根据用户输入生成8字以内的计划标题 */
+function generateTitle(problem: string, disease: string): string {
+  const keywords: Record<string, string> = {
+    "血糖": "血糖", "糖尿病": "控糖", "高血压": "降压", "血压": "稳压",
+    "睡眠": "安眠", "失眠": "安眠", "运动": "运动", "减肥": "减脂",
+    "饮食": "饮食", "关节": "关节", "颈椎": "颈椎", "腰椎": "护腰",
+    "心脏": "养心", "肠胃": "养胃", "情绪": "情绪", "疲劳": "抗疲劳",
+  };
+  for (const [k, v] of Object.entries(keywords)) {
+    if (problem.includes(k) || disease.includes(k)) return `${v}调理计划`;
+  }
+  return "健康调理计划";
 }
 
 export function DiagnosisChatModal({ isRediagnosis, onAcceptPlan, onClose }: DiagnosisChatModalProps) {
@@ -191,7 +205,8 @@ export function DiagnosisChatModal({ isRediagnosis, onAcceptPlan, onClose }: Dia
 
   const handleAccept = () => {
     if (generatedWeeklyPlans.length > 0) {
-      onAcceptPlan(generatedWeeklyPlans);
+      const title = generateTitle(userProblem, userDisease);
+      onAcceptPlan(title, generatedWeeklyPlans);
     }
   };
 
