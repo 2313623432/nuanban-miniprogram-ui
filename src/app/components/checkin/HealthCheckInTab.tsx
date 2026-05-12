@@ -423,6 +423,60 @@ export function HealthCheckInTab() {
         />
       )}
 
+      {/* 二次确认弹窗 — 放在顶层确保首次创建也能渲染 */}
+      {showPlanUpdateModal && (
+        <PlanUpdateConfirmModal
+          newTasksCount={pendingWeeklyPlans.length > 0 ? pendingWeeklyPlans[0].tasks.length : 5}
+          isNewPlan={!hasPlan}
+          onConfirm={() => {
+            const weekly = pendingWeeklyPlans.length > 0
+              ? pendingWeeklyPlans
+              : generateWeeklyPlans(newPlanPreviewTasks);
+            const title = pendingPlanTitle || "健康调理计划";
+            const startDate = new Date();
+            const planId = `plan-${Date.now()}`;
+            const newAutoTasks = weekly[0].tasks.map((content, index) => ({
+              id: `auto-${Date.now()}-${index}`,
+              content,
+              type: "auto" as const,
+              points: 2,
+              status: "pending" as const,
+              requiresPhoto: false
+            }));
+            const manualTasks = tasks.filter(t => t.type === "manual");
+            setTasks([...newAutoTasks, ...manualTasks]);
+            setWeeklyPlans(weekly);
+            setCurrentWeek(1);
+            setCurrentPlanId(planId);
+            setPlanStartDate(startDate);
+            setHasPlan(true);
+            setIsFirstTimePlan(false);
+            setPlanDataContext({
+              title,
+              tasks: weekly[0].tasks,
+              weeklyPlans: weekly,
+              startDate: startDate.toISOString(),
+              createdAt: Date.now(),
+            });
+            addToPlanHistory({ id: planId, title, startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
+            setShowPlanUpdateModal(false);
+            setShowNewPlanPreview(false);
+            setNewPlanPreviewTasks([]);
+            setPendingNewTasks([]);
+            setPendingWeeklyPlans([]);
+            setPendingPlanTitle("");
+            toast.success("计划创建成功！快来开始打卡吧");
+          }}
+          onCancel={() => {
+            setShowPlanUpdateModal(false);
+            setPendingNewTasks([]);
+            setPendingWeeklyPlans([]);
+            setPendingPlanTitle("");
+            toast.info("已取消计划创建");
+          }}
+        />
+      )}
+
       {showEmptyState ? (
         <EmptyPlanState
           isFirstTime={!hasPlan || isFirstTimePlan}
@@ -799,58 +853,6 @@ export function HealthCheckInTab() {
             <WechatMemberSubscriptionModal
               onSuccess={() => { setIsMember(true); setShowMemberModal(false); }}
               onClose={() => setShowMemberModal(false)}
-            />
-          )}
-
-          {/* 二次确认弹窗 */}
-          {showPlanUpdateModal && (
-            <PlanUpdateConfirmModal
-              newTasksCount={pendingWeeklyPlans.length > 0 ? pendingWeeklyPlans[0].tasks.length : 5}
-              isNewPlan={!hasPlan}
-              onConfirm={() => {
-                const weekly = pendingWeeklyPlans.length > 0
-                  ? pendingWeeklyPlans
-                  : generateWeeklyPlans(newPlanPreviewTasks);
-                const title = pendingPlanTitle || "健康调理计划";
-                const startDate = new Date();
-                const planId = `plan-${Date.now()}`;
-                const newAutoTasks = weekly[0].tasks.map((content, index) => ({
-                  id: `auto-${Date.now()}-${index}`,
-                  content,
-                  type: "auto" as const,
-                  points: 2,
-                  status: "pending" as const,
-                  requiresPhoto: false
-                }));
-                const manualTasks = tasks.filter(t => t.type === "manual");
-                setTasks([...newAutoTasks, ...manualTasks]);
-                setWeeklyPlans(weekly);
-                setCurrentWeek(1);
-                setCurrentPlanId(planId);
-                setPlanStartDate(startDate);
-                setPlanDataContext({
-                  title,
-                  tasks: weekly[0].tasks,
-                  weeklyPlans: weekly,
-                  startDate: startDate.toISOString(),
-                  createdAt: Date.now(),
-                });
-                addToPlanHistory({ id: planId, title, startDate: startDate.toISOString(), weeklyPlans: weekly, createdAt: Date.now() });
-                setShowPlanUpdateModal(false);
-                setShowNewPlanPreview(false);
-                setNewPlanPreviewTasks([]);
-                setPendingNewTasks([]);
-                setPendingWeeklyPlans([]);
-                setPendingPlanTitle("");
-                toast.success("计划更新成功！", { description: "新任务已立即生效，快来开始打卡吧" });
-              }}
-              onCancel={() => {
-                setShowPlanUpdateModal(false);
-                setPendingNewTasks([]);
-                setPendingWeeklyPlans([]);
-                setPendingPlanTitle("");
-                toast.info("已取消计划更新");
-              }}
             />
           )}
 
