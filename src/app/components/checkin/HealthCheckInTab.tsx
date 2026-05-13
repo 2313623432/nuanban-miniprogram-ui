@@ -426,6 +426,7 @@ export function HealthCheckInTab() {
       {/* 二次确认弹窗 — 放在顶层确保首次创建也能渲染 */}
       {showPlanUpdateModal && (
         <PlanUpdateConfirmModal
+          title={pendingPlanTitle}
           newTasksCount={pendingWeeklyPlans.length > 0 ? pendingWeeklyPlans[0].tasks.length : 5}
           isNewPlan={!hasPlan}
           onConfirm={() => {

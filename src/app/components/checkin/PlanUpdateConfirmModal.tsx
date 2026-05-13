@@ -1,13 +1,14 @@
 import { X, RefreshCw, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 interface PlanUpdateConfirmModalProps {
+  title?: string;
   newTasksCount: number;
   isNewPlan?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-export function PlanUpdateConfirmModal({ newTasksCount, isNewPlan = false, onConfirm, onCancel }: PlanUpdateConfirmModalProps) {
+export function PlanUpdateConfirmModal({ title, newTasksCount, isNewPlan = false, onConfirm, onCancel }: PlanUpdateConfirmModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
@@ -34,6 +35,14 @@ export function PlanUpdateConfirmModal({ newTasksCount, isNewPlan = false, onCon
           </button>
         </div>
 
+        {/* 计划标题 */}
+        {title && (
+          <div className="rounded-2xl bg-primary/5 border border-primary/15 px-4 py-3 text-center">
+            <span className="text-xs text-muted-foreground">计划名称</span>
+            <p className="text-base font-bold text-foreground mt-0.5">{title}</p>
+          </div>
+        )}
+
         {/* 变更说明 */}
         <div className="rounded-2xl bg-primary/5 border border-primary/15 p-4 space-y-2.5">
           <div className="flex items-center gap-2.5">
@@ -45,10 +54,6 @@ export function PlanUpdateConfirmModal({ newTasksCount, isNewPlan = false, onCon
           <div className="flex items-center gap-2.5 pt-1 border-t border-primary/10">
             <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
             <span className="text-sm">新增 <span className="font-bold text-foreground">{newTasksCount}</span> 个AI打卡任务，立即生效</span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-            <span className="text-sm">手动添加的任务<span className="font-medium text-foreground">不受影响</span></span>
           </div>
         </div>
 
