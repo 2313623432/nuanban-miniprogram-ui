@@ -184,18 +184,9 @@ export function AiHomePage() {
       };
       setMessages([aiGreeting]);
       setShowChatModal(true);
-    } else if ("section" in service && service.section === "look" && "hasAi" in service && !service.hasAi) {
-      // 第二页"看一看"类型：直接打开相机拍照
-      fileInputRef.current?.click();
     } else if ("section" in service && service.section === "look") {
-      // 第一页"看一看"类型：先显示开场白引导上传照片
-      const aiGreeting: Message = {
-        id: Date.now().toString(),
-        type: "ai",
-        content: `您好！我是您的健康助手 🌿\n\n${service.aiPrompt}\n\n请上传清晰的照片，我会立即为您分析。`
-      };
-      setMessages([aiGreeting]);
-      setShowChatModal(true);
+      // 看一看类型：直接打开相机拍照
+      fileInputRef.current?.click();
     } else if ("hasAi" in service && service.hasAi) {
       // 原有"去定制"类型
       setDiagnosisStep('ask_problem');
