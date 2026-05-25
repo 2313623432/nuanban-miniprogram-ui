@@ -140,308 +140,406 @@ export function AiHomePage() {
   }, [location]);
   
   const services = [
+    // ── 看一看（拍照出结果）──────────────────────────
     {
       id: 1,
-      title: "定制养生食谱",
+      title: "体检报告解读",
       icon: "📋",
-      bgColor: "bg-red-50",
-      buttonLabel: "去定制",
-      hasAi: true,
-      aiPrompt: "请告诉我您的体质特点、年龄、有什么健康问题，我会为您定制专属的养生食谱。"
+      bgColor: "bg-blue-50",
+      buttonLabel: "去体验",
+      section: "look" as const,
+      aiPrompt: "请上传您的体检报告照片，我会帮您解读异常指标，给出饮食和生活方式建议。"
     },
     {
       id: 2,
-      title: "中医舌苔诊断",
-      icon: "👅",
+      title: "面色诊断",
+      icon: "😊",
       bgColor: "bg-pink-50",
       buttonLabel: "去体验",
-      hasAi: false
+      section: "look" as const,
+      aiPrompt: "请上传一张光线充足的正脸照片，我会分析您的面色、眼袋、唇色等特征，给出气血和脾胃调理建议。"
     },
     {
       id: 3,
-      title: "治疗失眠疗法",
-      icon: "😴",
-      bgColor: "bg-blue-50",
-      buttonLabel: "去定制",
-      hasAi: true,
-      aiPrompt: "请告诉我您失眠或焦虑的具体情况、持续时间和主要症状，我会为您推荐改善方案。"
+      title: "白发脱发分析",
+      icon: "💇",
+      bgColor: "bg-purple-50",
+      buttonLabel: "去体验",
+      section: "look" as const,
+      aiPrompt: "请上传头顶、发际线的清晰照片，我会结合中医理论分析您的脱发类型和调理方向。"
     },
     {
       id: 4,
-      title: "日常饮食诊断",
-      icon: "🥗",
+      title: "指甲健康观察",
+      icon: "✋",
       bgColor: "bg-yellow-50",
       buttonLabel: "去体验",
-      hasAi: false
+      section: "look" as const,
+      aiPrompt: "请上传双手手指和指甲的清晰照片，我会分析指甲颜色、竖纹、月牙等特征，提示营养和健康关注点。"
     },
+    // ── 问一问（AI对话调理）──────────────────────────
     {
       id: 5,
-      title: "高效降压疗法",
+      title: "高血压调理",
       icon: "❤️",
       bgColor: "bg-red-50",
       buttonLabel: "去定制",
-      hasAi: true,
-      aiPrompt: "请告诉我您的血压情况、年龄和饮食习惯，我会为您推荐科学的降压方案。"
+      section: "ask" as const,
+      aiPrompt: "请告诉我您的性别、年龄、平时的血压数值和是否在吃药，我会为您定制科学的降压调理方案。"
     },
     {
       id: 6,
-      title: "从手掌看健康",
-      icon: "🤚",
-      bgColor: "bg-pink-50",
-      buttonLabel: "去体验",
-      hasAi: false
+      title: "体重管理评估",
+      icon: "⚖️",
+      bgColor: "bg-green-50",
+      buttonLabel: "去定制",
+      section: "ask" as const,
+      aiPrompt: "请告诉我您的身高、体重、腰围和平时活动量，我会为您评估身体状况并给出科学的体重管理建议。"
     },
     {
       id: 7,
-      title: "防癌饮食指南",
-      icon: "🛡️",
-      bgColor: "bg-green-50",
+      title: "肝脏疾病调理",
+      icon: "🫁",
+      bgColor: "bg-orange-50",
       buttonLabel: "去定制",
-      hasAi: true,
-      aiPrompt: "请告诉我您的年龄、家族病史和日常饮食习惯，我会为您定制科学的防癌饮食方案。"
+      section: "ask" as const,
+      aiPrompt: "请告诉我您的具体不适症状、是否有确诊的肝脏疾病和其他基础病，我会为您定制肝脏调理方案。"
     },
     {
       id: 8,
-      title: "住宅风水测评",
-      icon: "🏠",
-      bgColor: "bg-purple-50",
-      buttonLabel: "去体验",
-      hasAi: false
-    }
+      title: "喝茶调肠胃",
+      icon: "🍵",
+      bgColor: "bg-teal-50",
+      buttonLabel: "去定制",
+      section: "ask" as const,
+      aiPrompt: "请告诉我您具体有哪些肠胃不适症状，平时是否喜欢喝茶，我会为您推荐适合的茶饮和调理方法。"
+    },
   ];
   
   const handleServiceClick = (service: typeof services[0]) => {
     setSelectedService(service.title);
 
-    if (service.hasAi) {
-      // "去定制"类型：重置问诊状态，开始引导式问诊
+    if (service.section === "ask") {
+      // "问一问"类型：引导式AI问诊
       setDiagnosisStep('ask_problem');
       setUserProblem('');
       setUserDisease('');
       setGeneratedPlan('');
 
-      // 显示第一个问题
       const aiGreeting: Message = {
         id: Date.now().toString(),
         type: "ai",
-        content: "您好！我是您的健康管理专家 🌿\n\n为了给您制定最合适的养生计划，请先告诉我：\n\n您主要想调理什么问题呢？\n例如：睡眠不好、血压偏高、消化不良、容易疲劳等"
+        content: `您好！我是您的健康管理专家 🌿\n\n${service.aiPrompt}\n\n请详细告诉我您的情况，我会为您提供专业的调理建议。`
       };
       setMessages([aiGreeting]);
       setShowChatModal(true);
     } else {
-      // "去体验"类型：调取照片选择器
-      fileInputRef.current?.click();
+      // "看一看"类型：先显示开场白引导上传照片
+      const aiGreeting: Message = {
+        id: Date.now().toString(),
+        type: "ai",
+        content: `您好！我是您的健康助手 🌿\n\n${service.aiPrompt}\n\n请上传清晰的照片，我会立即为您分析。`
+      };
+      setMessages([aiGreeting]);
+      setShowChatModal(true);
     }
   };
   
   const generateAIResponse = (userQuestion: string, serviceTitle: string): string => {
     const responses: Record<string, string> = {
-      "定制养生食谱": `根据您的情况分析，我为您定制以下养生食谱方案：
+      // ── 看一看 ──
+      "体检报告解读": `【报告解读】
+根据您上传的体检报告，我为您分析如下：
 
-【早餐建议】
-• 山药红枣粥：补脾养胃，益气补血[1]
-• 核桃芝麻糊：滋养肝肾，润肠通便
-• 温热豆浆配全麦面包
+【主要异常指标】
+如有血压偏高：需关注心血管健康
+如有血糖异常：注意控制饮食中的糖分摄入
+如有血脂偏高：减少饱和脂肪摄入
 
-【午餐建议】
-• 清蒸鲈鱼：富含优质蛋白，易消化
-• 木耳炒山药：降血脂，增强免疫[2]
-• 糙米饭：富含B族维生素
-• 时令蔬菜汤
+【饮食建议】
+多吃新鲜蔬菜水果，每天至少500g蔬菜
+选择全谷物主食，减少精制碳水
+优质蛋白来源：鱼、豆制品、去皮禽肉
+控制盐摄入，每天不超过6g
 
-【晚餐建议】
-• 小米南瓜粥：养胃安神
-• 清炒西花：富含维生素C和膳食纤维
-• 适量豆制品
-
-【日常注意】
-• 每日饮水1500-2000ml
-• 避免生冷油腻食物
-• 三餐定时定量
-• 晚餐不宜过饱，建议7分饱
-
-【特提醒】
-根据中医理论，您的体质适合温补，建议配合适度运动如太极、八段锦等[3]。坚持3个月后体质会有明显改善。
-
-【参考来源】
-[1] 《中医食疗学》(第2版) 中国中医药出版社
-[2] 《本草纲目》 人民卫生出版社
-[3] 《黄帝内经》 中医古籍出版社`,
-      
-      "治疗失眠疗法": `根据您的失眠焦虑情况，我为您推荐以下综合调理方案：
-
-【中医分析】
-您的症状属于心脾两虚、肝郁气滞型失眠[1]。长期精神紧张导致气血失调。
-
-【调理方案】
-
-一、中药调理
-• 酸枣仁15g：养心安神
-• 茯苓12g：宁心安神
-• 百合15g：清心安神
-• 合欢皮10g：解郁安神
-
-二、穴位按摩[2]
-• 神门穴：每晚睡前按压3-5分钟
-• 内关穴：缓解焦虑情绪
-• 三阴交：改善睡眠质量
-
-三、生活调理
-• 建立规律作息：晚上10点前入睡
-• 睡前1小时避免使用电子设备
-• 卧室保持适宜温度（18-22℃）
-• 睡前温水泡脚15-20分钟
-
-【参考来源】
-[1] 《中医内科学》(第10版) 人民卫生出版社
-[2] 《针灸学》(第9版) 中国中医药出版社`,
-      
-      "中医舌苔诊断": `【舌象分析】
-根据图片，您的舌象呈现以下特征：
-
-• 舌质：淡红偏白，提示气血不足[1]
-• 舌苔：薄白微腻，显示脾胃虚弱
-• 舌形：舌体略胖，有齿痕，说明脾虚湿重[2]
-• 舌下络脉：略有淤滞现象
-
-【中医诊断】
-综合舌象判断，目前属于：
-1. 脾气虚弱型体质
-2. 体内湿气较重
-3. 气血运行不畅
-
-【健康建议】
-
-一、饮食调理
-• 宜食：山药、薏米、红豆、茯苓等健脾祛湿食物
-• 忌食：生冷、油腻、甜腻食物
-• 每日三餐规律，不要暴饮暴食
-• 注意控制血糖，避免高糖食物
-
-二、中药调理
-• 四君子汤：健脾益气
-• 参苓白术散：健脾渗湿[3]
-建议咨询中医师后服用
-
-三、生活调理
-• 改善睡眠质量，每晚保证7-8小时睡眠
-• 适量运动，促进气血循环
-• 定期监测血压，保持健康水平
-
-【参考来源】
-[1] 《中医诊断学》(第9版) 中国中医药出版社
-[2] 《中医舌诊学》(第2版) 人民卫生出版社
-[3] 《方剂学》(第9版) 中国中医药出版社`,
-      
-      "日常饮食诊断": `【饮食分析】
-根据您上传的图片，我对这份饮食进行以下分析：
-
-• 食物类型：以碳水化合物和脂肪为主
-• 营养结构：蛋白质摄入不足，蔬菜量偏少[1]
-• 烹饪方式：偏油腻，不利于消化
-• 总体评价：营养不够均衡
-
-【健康风险提示】
-这种饮食结构可能导致：
-• 血糖波动较大，不利于糖尿病患者
-• 血压升高风险，高盐高脂饮食需警惕
-• 睡眠质量下降，晚餐过于油腻影响消化
-
-【改善建议】
-
-一、调整食物比例[2]
-• 蔬菜：占每餐的1/2
-• 优质蛋白：占1/4（鱼、豆制品、瘦肉）
-• 主食：占1/4（粗粮为主）
-• 控糖控盐，预防糖尿病和高血压
-
-二、优化烹饪方式
-• 多采用蒸、煮、炖的方式
-• 少油少盐少糖[3]
-• 控制每餐用油量在10克以内
-
-三、健康监测
-• 定期测量血糖和血压
-• 保持充足睡眠和适量运动
-• 建议使用智能健康设备辅助管理
-
-【参考来源】
-[1] 《中国居民膳食指南》(2022版) 人民卫生出版社
-[2] 《营养与食品卫生学》(第8版) 人民卫生出版社
-[3] 《实用营养学》(第4版) 人民卫生出版社`,
-      
-      "防癌饮食指南": `【饮食分析】
-根据您的年龄、家族病史和日常饮食习惯，我为您定制以下防癌饮食方案：
-
-【早餐建议】
-• 燕麦粥：富含膳食纤维，有助于肠道健康
-• 蔬菜沙拉：提供多种维生素和矿物质
-• 低脂牛奶：补充钙质和蛋白质
-
-【午餐建议】
-• 烤鸡胸肉：低脂肪高蛋白，有助于肌肉修复
-• 红薯：富含维生素A和膳食纤维
-• 绿叶蔬菜：提供维生素C和叶酸
-
-【晚餐建议】
-• 煮鱼：富含Omega-3脂肪酸，有助于心脏健康
-• 紫甘蓝沙拉：提供维生素K和抗氧化剂
-• 燕麦饼干：低糖低脂，适合控制体重
-
-【日常注意】
-• 每日饮水1500-2000ml
-• 避免高糖高脂肪食物
-• 三餐定时定量
-• 增加蔬菜水果摄入量
+【生活方式建议】
+每周至少150分钟中等强度运动
+保持规律作息，充足睡眠
+保持心情舒畅，避免情绪波动
+定期复查异常指标，遵医嘱
 
 【特别提醒】
-根据现代营养学研究，均衡饮食和适量运动是预防癌症的重要措施[1]。坚持健康生活方式，定期体检，可以有效降低癌症风险。
+本解读仅供参考，不能替代医生诊断。如有异常指标，请及时就医。
 
 【参考来源】
-[1] 《癌症预防与控制》(第3版) 人民卫生出版社`,
-      
-      "住宅风水测评": `【风水分析】
-根据您上传的住宅图片，我对您的居住环境进行以下风水分析：
+[1] 《始于三餐，血压轻松降》人民卫生出版社
+[2] 《始于三餐：血糖轻松降》人民卫生出版社
+[3] 《食疗心脑血管病真有效》中国中医药出版社`,
 
-【整体布局】
-• 户型方正，符合传统风水学中"四方之地"的理想格局[1]
-• 采光充足，阳气充盈，有利于居住者身心健康
-• 气口通畅，空气流通良好
+      "面色诊断": `【面诊分析】
+根据您上传的正脸照片，我为您进行面色分析：
 
-【重点区域】
+【整体面色评估】
+您的面色整体偏黄，光泽度不足，提示脾胃功能需关注[1]。
 
-一、客厅
-• 位置：处于房屋中心位置，利于家庭和谐
-• 建议：可在西南角摆放绿植，增强财运[2]
-• 注意：沙发背后宜有实墙，增加安全感
+【具体特征分析】
+面色暗黄：提示脾胃虚弱，气血生化不足
+眼袋明显：可能与肾气不足、水液代谢不畅有关
+唇色偏淡：反映气血不足，需补养心脾
+皮肤光泽不足：肺气宣发功能需加强
 
-二、卧室
-• 位置：远离入户门，私密性好
-• 建议：床头朝向宜东或南，有助于健康睡眠[3]
-• 注意：避免镜子正对床铺
+【中医辨证解读】
+综合判断属于脾胃虚弱、气血不足型体质。脾胃为后天之本，气血生化之源，需要从饮食和作息两方面调理[2]。
 
-三、厨房
-• 位置：位于吉位，利于家人健康
-• 建议：保持整洁，定期清理油污
-• 注意：炉灶不宜正对水槽
+【日常调理建议】
+一、饮食调理
+多吃健脾食物：山药、莲子、红枣、小米
+补气血食物：枸杞、桂圆、黑芝麻、红糖姜茶
+避免生冷、油腻、辛辣食物
 
-【改善建议】
-• 入户玄关可摆放鱼缸或流水摆件，招财纳福
-• 客厅可悬挂山水画，寓意靠山有水
-• 卧室宜使用温暖色调，营造温馨氛围
+二、作息调理
+保证充足睡眠，晚上11点前入睡
+午间小憩15-30分钟，避免熬夜
 
-【总体评价】
-您的住宅整体风水较好，只需在细节上稍作调整，便能更好地提升居住品质和运势。
+三、按摩保健
+每天按揉足三里穴3-5分钟（健脾要穴）
+按揉合谷穴促进面部气血循环
 
 【参考来源】
-[1] 《居家风水学》(第4版) 中国建筑工业出版社
-[2] 《阳宅风水实用图解》 中国传统文化出版社
-[3] 《风水与健康》(第2版) 人民卫生出版社`
+[1] 《面诊全书》中医古籍出版社
+[2] 《实用中医养生速查图典》人民卫生出版社`,
+
+      "白发脱发分析": `【头发分析报告】
+根据您上传的头发和头皮照片，分析如下：
+
+【头发整体状况】
+您的脱发/白发情况属于肝肾亏虚、气血不足型[1]，在中年人群中较为常见。
+
+【脱发类型分析】
+头顶区域稀疏：提示肾气不足，中医认为"肾其华在发"
+发际线后移：可能与血热、精神压力有关
+白发增多：肝肾阴虚，精血不能濡养毛发
+
+【可能原因】
+遗传因素：有一定家族倾向
+精神压力：长期紧张导致头皮血液循环不畅
+睡眠不足：影响肝肾修复和气血生成
+
+【中医调理建议】
+一、饮食调理
+多吃黑色食物：黑芝麻、黑豆、黑米、何首乌
+补肾食物：核桃、枸杞、桑葚、山药
+补充优质蛋白：鱼、蛋、豆制品[2]
+
+二、洗护建议
+使用温和的草本洗发产品
+洗头水温不宜过高，37-40℃为宜
+每周用生姜片按摩头皮2-3次
+
+三、生活调理
+保证充足睡眠，减少熬夜
+适当运动，促进全身气血循环
+保持心情舒畅，避免过度焦虑
+
+【参考来源】
+[1] 《实用中医养生速查图典》人民卫生出版社
+[2] 《您所不知道的中药配伍》中国中医药出版社
+[3] 《新编中草药图鉴》人民卫生出版社`,
+
+      "指甲健康观察": `【指甲分析报告】
+根据您上传的指甲照片，分析如下：
+
+【整体健康评估】
+您的指甲反映出一些气血和营养方面的关注点，需要综合调理[1]。
+
+【具体特征分析】
+指甲颜色偏淡：提示气血不足或贫血倾向
+竖纹明显：可能与长期劳累、肝血不足有关
+月牙偏小/偏少：反映身体能量储备不足
+指甲脆裂：提示蛋白质、钙质等营养素摄入不足
+
+【健康提示】
+营养方面：注意补充优质蛋白、铁、锌、钙
+气血方面：脾胃为气血生化之源，从健脾入手
+肝脏方面：肝主筋，指甲为筋之余，需养肝血[2]
+
+【日常养护建议】
+一、饮食调理
+多吃富含铁的食物：红枣、菠菜、动物肝脏
+补充优质蛋白：蛋、奶、鱼、豆制品
+适量坚果：核桃、杏仁富含维生素E和锌
+
+二、习惯调整
+避免频繁美甲，让指甲自然呼吸
+做家务时戴手套，避免化学物品伤害
+保持手部滋润，避免干燥开裂
+
+三、全面养生
+保证充足睡眠，养肝血
+适当运动促进血液循环
+定期体检，关注血常规指标
+
+【参考来源】
+[1] 《手诊全书》中医古籍出版社
+[2] 《实用中医养生速查图典》人民卫生出版社`,
+
+      // ── 问一问 ──
+      "高血压调理": `【高血压调理方案】
+根据您提供的情况，我为您定制以下调理方案：
+
+【用户情况总结】
+根据您的年龄、血压数值和用药情况，您的血压处于需要积极管理的范围[1]。
+
+【饮食调理建议】
+一、推荐食物
+芹菜：含有降压成分芹菜素，可凉拌或榨汁
+洋葱：含有前列腺素A，有助于血管扩张
+黑木耳：活血化瘀，降低血液粘稠度
+香蕉：富含钾元素，有助钠排出
+深海鱼类：富含Omega-3，保护心血管[2]
+
+二、需要避免
+高盐食物：每天盐摄入控制在6g以下
+腌制食品：咸菜、腊肉、酱料等
+高脂食物：肥肉、油炸食品
+过量饮酒：酒精会使血压升高
+
+【运动调理建议】
+适合运动：快走、太极拳、八段锦、游泳
+运动强度：微微出汗即可
+运动频率：每周5次，每次30-40分钟
+
+【生活方式建议】
+保持情绪稳定，避免大喜大悲
+规律作息，保证充足睡眠
+戒烟限酒
+每天定时测量血压并记录
+
+【重要提醒】
+请按时服用医生开具的降压药，勿自行停药或调整剂量。
+
+【参考来源】
+[1] 《学会吃！快速调理高血压》人民卫生出版社
+[2] 《心脑血管疾病中医食养方》中国中医药出版社
+[3] 《心脏与心血管保护手册》人民卫生出版社`,
+
+      "体重管理评估": `【体重管理评估报告】
+根据您提供的身高、体重、腰围等信息，分析如下：
+
+【身体状况评估】
+您的BMI指数和腰围数据显示，目前处于需要关注体重管理的范围。腹型肥胖是需要重点关注的健康风险因素[1]。
+
+【代谢风险提示】
+腰围超标提示内脏脂肪偏多，需关注心血管健康
+体重偏重增加关节负担，尤其是膝关节
+需关注血糖、血脂等代谢指标
+
+【饮食调整建议】
+一、推荐饮食
+早餐：燕麦粥+鸡蛋+水果，营养均衡饱腹感强
+午餐：杂粮饭+清蒸鱼/鸡胸肉+大量蔬菜[2]
+晚餐：清淡为主，蔬菜汤+少量主食，7分饱
+
+二、需要控制
+减少精制碳水：白米饭、面条、馒头
+避免含糖饮料和加工零食
+控制烹饪用油，多蒸煮少煎炸
+晚餐尽量在19:00前完成
+
+【运动建议】
+适合运动：快走、游泳、骑自行车、太极拳
+运动频率：每周至少5次，每次40-60分钟
+强度把控：运动时能正常说话但不能唱歌[3]
+
+【生活方式建议】
+每天喝够1500-2000ml水
+保证7-8小时睡眠，睡眠不足影响代谢
+减少久坐，每小时起来活动5分钟
+
+【参考来源】
+[1] 《肥胖.真相：医生也在读》人民卫生出版社
+[2] 《养生食谱》中国轻工业出版社
+[3] 《家庭防癌抗癌饮食指南》人民卫生出版社`,
+
+      "肝脏疾病调理": `【肝脏调理方案】
+根据您描述的情况，我为您提供以下调理建议：
+
+【情况总结】
+根据您描述的肝脏不适症状和基础情况，需要从饮食和生活方式方面进行系统调理[1]。
+
+【饮食调理建议】
+一、推荐多吃的食物
+绿叶蔬菜：菠菜、西兰花富含叶绿素和抗氧化物质
+优质蛋白：鱼肉、鸡胸肉、豆制品、蛋白
+全谷物：燕麦、糙米、小米，富含B族维生素
+枸杞：养肝明目，可泡水或煮粥
+红枣：补血养肝，每日3-5颗[2]
+
+二、严格避免的食物
+绝对禁酒：酒精对肝脏伤害极大
+高脂食物：肥肉、油炸食品、奶油制品
+霉变食物：发霉的花生、玉米等含黄曲霉素
+加工食品：含防腐剂和添加剂的食物
+
+三、饮食习惯
+少食多餐，每餐7分饱
+细嚼慢咽，促进消化吸收
+定时定量，不暴饮暴食
+
+【生活方式建议】
+作息：晚上11点前入睡，肝经当令时段需深度睡眠
+运动：适度运动如散步、太极，避免剧烈运动
+情绪：保持心情舒畅，避免生气伤肝
+
+【重要提醒】
+本建议仅供参考，不能替代医生指导。肝脏疾病请务必在专业医生指导下治疗[3]。
+
+【参考来源】
+[1] 《肝脏疾病吃什么？禁什么》中国轻工业出版社
+[2] 《实用中医养生速查图典》人民卫生出版社
+[3] 《养生食谱》中国轻工业出版社`,
+
+      "喝茶调肠胃": `【茶饮调理建议】
+根据您描述的肠胃情况，我为您推荐以下茶饮方案：
+
+【情况总结】
+您的肠胃不适属于脾胃功能需要调理的类型，适当饮茶有助于改善消化功能[1]。
+
+【推荐茶饮】
+
+一、陈皮普洱茶
+功效：理气健脾、消食化积、暖胃驱寒
+适用：脾胃虚寒、消化不良、饭后腹胀
+冲泡方法：陈皮3g+普洱茶5g，沸水冲泡
+饮用时间：饭后半小时饮用最佳
+注意事项：胃酸过多者少量饮用[2]
+
+二、桂圆红枣茶
+功效：补气养血、温胃健脾、安神助眠
+适用：脾胃虚弱、食欲不振、手脚冰凉
+冲泡方法：桂圆5颗+红枣3颗，沸水焖泡10分钟
+饮用时间：上午或下午饮用，晚上不宜
+
+三、大麦茶
+功效：健脾消食、清热解暑、利尿消肿
+适用：食积不化、口干口苦、消化不良
+冲泡方法：炒大麦10g，沸水冲泡5分钟
+饮用时间：全天可饮，饭前饭后均可[3]
+
+【日常肠胃养护】
+三餐定时定量，避免暴饮暴食
+少食生冷、油腻、辛辣食物
+饭后散步15分钟促进消化
+注意腹部保暖，避免受凉
+
+【参考来源】
+[1] 《中国茶道全书》中国轻工业出版社
+[2] 《实用中医养生速查图典》人民卫生出版社
+[3] 《养生食谱》中国轻工业出版社`,
     };
-    
+
     return responses[serviceTitle] || "感谢您的提问，让我为您详细分析...";
   };
-  
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
     
@@ -516,7 +614,7 @@ export function AiHomePage() {
 
     // 判断是否是"去定制"类型的服务（引导式问诊）
     const currentService = services.find(s => s.title === selectedService);
-    const shouldShowAdviceCard = currentService?.hasAi === true;
+    const shouldShowAdviceCard = currentService?.section === "ask";
 
     if (shouldShowAdviceCard) {
       // 引导式问诊流程
@@ -569,7 +667,7 @@ export function AiHomePage() {
         content: "",
         isAdviceCard: true,
         adviceData: {
-          serviceName: selectedService || "定制养生食谱",
+          serviceName: selectedService || "健康调理计划",
           analysis: analysis,
           plan: plan
         },
@@ -601,7 +699,7 @@ export function AiHomePage() {
           content: "",
           isAdviceCard: true,
           adviceData: {
-            serviceName: selectedService || "定制养生食谱",
+            serviceName: selectedService || "健康调理计划",
             analysis: analysis,
             plan: plan
           },
@@ -1066,33 +1164,64 @@ export function AiHomePage() {
         </div>
         
         {/* Service Cards - 3D Glass Effect with Tilted Layout */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {services.map((service, index) => (
-            <div
-              key={service.id}
-              className={`group relative rounded-3xl p-5 transition-all duration-300 shadow-xl hover:shadow-2xl ${service.bgColor} border-2 border-white/50`}
-            >
-              {/* Icon */}
-              <div className="flex justify-center mb-3">
-                <div className="text-4xl drop-shadow-lg">
-                  {service.icon}
-                </div>
-              </div>
-              
-              {/* Title */}
-              <h3 className="text-base font-bold text-gray-800 text-center mb-3">
-                {service.title}
-              </h3>
-              
-              {/* Button */}
-              <button
-                onClick={() => handleServiceClick(service)}
-                className="w-full py-2.5 rounded-full bg-gray-800 hover:bg-gray-900 text-white text-base font-medium transition-all active:scale-95"
+        {/* ── 看一看板块 ── */}
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">📷</span>
+            <h2 className="text-lg font-bold text-gray-800">看一看</h2>
+            <span className="text-xs text-muted-foreground ml-1">拍照直接出结果</span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {services.filter(s => s.section === "look").map((service) => (
+              <div
+                key={service.id}
+                className={`group relative rounded-3xl p-5 transition-all duration-300 shadow-xl hover:shadow-2xl ${service.bgColor} border-2 border-white/50`}
               >
-                {service.buttonLabel}
-              </button>
-            </div>
-          ))}
+                <div className="flex justify-center mb-3">
+                  <div className="text-4xl drop-shadow-lg">{service.icon}</div>
+                </div>
+                <h3 className="text-base font-bold text-gray-800 text-center mb-3">
+                  {service.title}
+                </h3>
+                <button
+                  onClick={() => handleServiceClick(service)}
+                  className="w-full py-2.5 rounded-full bg-gray-800 hover:bg-gray-900 text-white text-base font-medium transition-all active:scale-95"
+                >
+                  {service.buttonLabel}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── 问一问板块 ── */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">💬</span>
+            <h2 className="text-lg font-bold text-gray-800">问一问</h2>
+            <span className="text-xs text-muted-foreground ml-1">AI对话深度调理</span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {services.filter(s => s.section === "ask").map((service) => (
+              <div
+                key={service.id}
+                className={`group relative rounded-3xl p-5 transition-all duration-300 shadow-xl hover:shadow-2xl ${service.bgColor} border-2 border-white/50`}
+              >
+                <div className="flex justify-center mb-3">
+                  <div className="text-4xl drop-shadow-lg">{service.icon}</div>
+                </div>
+                <h3 className="text-base font-bold text-gray-800 text-center mb-3">
+                  {service.title}
+                </h3>
+                <button
+                  onClick={() => handleServiceClick(service)}
+                  className="w-full py-2.5 rounded-full bg-gray-800 hover:bg-gray-900 text-white text-base font-medium transition-all active:scale-95"
+                >
+                  {service.buttonLabel}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       
@@ -1225,9 +1354,15 @@ export function AiHomePage() {
               </div>
               
               <p className="text-center text-white/70 mt-4 text-sm">
-                {selectedService === "中医舌苔诊断" 
-                  ? "请伸出舌头，对准取景框拍摄" 
-                  : "请将食物对准取景框拍摄"}
+                {selectedService === "面色诊断"
+                  ? "请正脸对准取景框，保持光线充足"
+                  : selectedService === "白发脱发分析"
+                  ? "请将头顶和发际线对准取景框"
+                  : selectedService === "指甲健康观察"
+                  ? "请将手指和指甲对准取景框"
+                  : selectedService === "体检报告解读"
+                  ? "请将体检报告对准取景框，确保文字清晰"
+                  : "请对准取景框拍摄"}
               </p>
             </div>
           </div>
